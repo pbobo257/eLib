@@ -5,8 +5,38 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:eLib"
         mc:Ignorable="d"
-        Title="RegisterWindow" Height="600" Width="450">
+        Title="Register" Height="600" Width="400" ResizeMode="NoResize">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <TextBlock FontSize="26">Login</TextBlock>
+        <TextBox x:Name="LoginField" Grid.ColumnSpan="2" VerticalAlignment="Bottom" FontSize="26"></TextBox>
+
+        <TextBlock Grid.Row="1" FontSize="26">E-Mail</TextBlock>
+        <TextBox x:Name="MailField" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom" FontSize="26"></TextBox>
         
+        <TextBlock Grid.Row="2" FontSize="26">Password</TextBlock>
+        <PasswordBox x:Name="PasswordField" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Bottom" FontSize="26"></PasswordBox>
+        
+        <TextBlock Grid.Row="3" Grid.ColumnSpan="2" FontSize="26">Confirm Password</TextBlock>
+        <PasswordBox x:Name="PasswordConfirmField" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Bottom" FontSize="26"></PasswordBox>
+
+        <Button FontSize="24" Grid.Row="5" Grid.Column="0" Content="Register" Background="#FF4AB0D6" Margin="10"
+                x:Name="RegisterBtn" Click="RegisterBtn_Click"/>
+        <Button FontSize="24" Grid.Row="5" Grid.Column="1" Content="Cancel" Margin="10"
+                x:Name="CancelBtn" Click="CancelBtn_Click"/>
+
+
     </Grid>
 </Window>

@@ -24,7 +24,6 @@ namespace eLib
     public partial class AddBookWindow : Window
     {
         private readonly AppDbContext _context;
-        private readonly DbSet<BookDetails> _detailsSet;
         private readonly DbSet<BookHeader> _headersSet;
         private BookHeader newHeader = new BookHeader();
         private BookDetails newDetails = new BookDetails();
@@ -34,7 +33,6 @@ namespace eLib
             InitializeComponent();
 
             _context = context;
-            _detailsSet = _context.Set<BookDetails>();
             _headersSet = _context.Set<BookHeader>();
         }
 
@@ -124,21 +122,21 @@ namespace eLib
                 || string.IsNullOrEmpty(DescriptionInput.Text) || newHeader.Cover == null 
                 || newDetails.Book == null)
             {
+                MessageBox.Show("Fill All Fields!!!");
                 return;
             }
-            //newHeader.Id = (_headersSet.Count()>0) ? _headersSet.ToList()[^1].Id + 1 : 1;
             newHeader.Name = BookNameInput.Text;
-            _headersSet.Add(newHeader);
-            _context.SaveChanges();
-            //newDetails.Id = (_detailsSet.Count()>0) ? _detailsSet.ToList()[^1].Id + 1 : 1;
+
             newDetails.Author = AuthorInput.Text;
             newDetails.Genre = GenreInput.Text;
             newDetails.Description = DescriptionInput.Text;
             newDetails.ReleaseDate = (DateTime)ReleaseDatePicker.SelectedDate;
-            var header = _headersSet.FirstOrDefault(x=>x.Name.Equals(BookNameInput.Text));
-            newDetails.HeaderId = header.Id;
-            _detailsSet.Add(newDetails);
+
+            newHeader.Details = newDetails;
+            _headersSet.Add(newHeader);
             _context.SaveChanges();
+
+
             MessageBox.Show("Saved");
             Close();
         }

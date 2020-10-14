@@ -44,13 +44,7 @@ namespace eLib
             {
                 return;
             }
-            DoubleAnimation placeholderAnimation = new DoubleAnimation();
-            placeholderAnimation.From = LoginPlaceholder.ActualHeight;
-            placeholderAnimation.To = LoginPlaceholder.ActualHeight+40;
-            placeholderAnimation.Duration = TimeSpan.FromSeconds(0.25);
-            placeholderAnimation.Completed += (sender, Args) => Panel.SetZIndex(LoginInput, 1);
-            LoginPlaceholder.BeginAnimation(HeightProperty, placeholderAnimation);
-            LoginPlaceholder.Foreground = Brushes.Black;
+            OnGotFocusPlaceholderAnim(LoginPlaceholder);
             
         }
 
@@ -60,13 +54,7 @@ namespace eLib
             {
                 return;
             }
-            DoubleAnimation placeholderAnimation = new DoubleAnimation();
-            placeholderAnimation.From = LoginPlaceholder.ActualHeight;
-            placeholderAnimation.To = LoginPlaceholder.ActualHeight - 40;
-            placeholderAnimation.Duration = TimeSpan.FromSeconds(0.25);
-            LoginPlaceholder.BeginAnimation(HeightProperty, placeholderAnimation);
-            Panel.SetZIndex(LoginInput, 0);
-            LoginPlaceholder.Foreground = placeholderBrush;
+            OnLostFocusPlaceholderAnim(LoginPlaceholder);
         }
 
         private void PasswordInput_GotFocus(object sender, RoutedEventArgs e)
@@ -75,13 +63,7 @@ namespace eLib
             {
                 return;
             }
-            DoubleAnimation placeholderAnimation = new DoubleAnimation();
-            placeholderAnimation.From = PasswordPlaceholder.ActualHeight;
-            placeholderAnimation.To = PasswordPlaceholder.ActualHeight + 40;
-            placeholderAnimation.Duration = TimeSpan.FromSeconds(0.25);
-            placeholderAnimation.Completed += (sender, Args) => Panel.SetZIndex(PasswordInput, 1);
-            PasswordPlaceholder.BeginAnimation(HeightProperty, placeholderAnimation);
-            PasswordPlaceholder.Foreground = Brushes.Black;
+            OnGotFocusPlaceholderAnim(PasswordPlaceholder);
         }
 
         private void PasswordInput_LostFocus(object sender, RoutedEventArgs e)
@@ -90,13 +72,7 @@ namespace eLib
             {
                 return;
             }
-            DoubleAnimation placeholderAnimation = new DoubleAnimation();
-            placeholderAnimation.From = PasswordPlaceholder.ActualHeight;
-            placeholderAnimation.To = PasswordPlaceholder.ActualHeight - 40;
-            placeholderAnimation.Duration = TimeSpan.FromSeconds(0.25);
-            PasswordPlaceholder.BeginAnimation(HeightProperty, placeholderAnimation);
-            Panel.SetZIndex(PasswordInput, 0);
-            PasswordPlaceholder.Foreground = placeholderBrush;
+            OnLostFocusPlaceholderAnim(PasswordPlaceholder);
         }
 
         private void LoginBtn_Click(object sender, RoutedEventArgs e)
@@ -112,9 +88,39 @@ namespace eLib
             Hide();
         }
 
+        void OnGotFocusPlaceholderAnim(TextBlock placeholder)
+        {
+            DoubleAnimation placeholderAnimation = new DoubleAnimation
+            {
+                From = placeholder.ActualHeight,
+                To = placeholder.ActualHeight + 40,
+                Duration = TimeSpan.FromSeconds(0.25)
+            };
+            placeholder.BeginAnimation(HeightProperty, placeholderAnimation);
+            placeholder.Foreground = Brushes.Black;
+        }
+
+        void OnLostFocusPlaceholderAnim(TextBlock placeholder)
+        {
+            DoubleAnimation placeholderAnimation = new DoubleAnimation
+            {
+                From = placeholder.ActualHeight,
+                To = placeholder.ActualHeight - 40,
+                Duration = TimeSpan.FromSeconds(0.25)
+            };
+            placeholder.BeginAnimation(HeightProperty, placeholderAnimation);
+            placeholder.Foreground = placeholderBrush;
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Environment.Exit(1);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var registerWindow = new RegisterWindow(_context);
+            registerWindow.ShowDialog();
         }
     }
 }

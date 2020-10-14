@@ -37,7 +37,7 @@ namespace eLib
 
         private void ReadBtn_Click(object sender, RoutedEventArgs e)
         {
-            var path = _header.Name + ".pdf";
+            var path = _header.Name.Split(' ')[0] + ".pdf";
             File.WriteAllBytes(path, _details.Book);
             var p = new Process();
             p.StartInfo = new ProcessStartInfo(path)

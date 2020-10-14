@@ -23,7 +23,7 @@
         
         <TextBlock Grid.Row="0" Grid.Column="1" FontSize="20" Margin="0,20,0,5">Book Name</TextBlock>
         <TextBox x:Name="BookNameInput" Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"
-                 VerticalAlignment="Top" Margin="0, 50, 0, 10" FontSize="20"></TextBox>
+                 VerticalAlignment="Top" Margin="0, 50, 0, 10" FontSize="20" MaxLength="100"></TextBox>
         
         <TextBlock Grid.Row="0" Grid.Column="1" FontSize="20" Margin="0,90,0,5">Author</TextBlock>
         <TextBox x:Name="AuthorInput" Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"
@@ -31,7 +31,7 @@
 
         <TextBlock Grid.Row="0" Grid.Column="1" FontSize="20" Margin="0,160,0,5">Genre</TextBlock>
         <TextBox x:Name="GenreInput" Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"
-                 VerticalAlignment="Top" Margin="0, 190, 0, 10" FontSize="20"></TextBox>
+                 VerticalAlignment="Top" Margin="0, 190, 0, 10" FontSize="20" MaxLength="50"></TextBox>
 
         <TextBlock Grid.Row="0" Grid.Column="1" FontSize="20" Margin="0,5,0,120" VerticalAlignment="Bottom">Release Date</TextBlock>
         <DatePicker x:Name="ReleaseDatePicker" Grid.Row="0" Grid.Column="1" FontSize="20" VerticalAlignment="Bottom"
@@ -43,7 +43,7 @@
 
         <TextBlock Grid.Row="1"  FontSize="20" Margin="20">Description</TextBlock>
         <TextBox x:Name="DescriptionInput" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Top" Margin="10,50,10,60"
-                 TextWrapping="Wrap" AcceptsReturn="True" FontSize="16"></TextBox>
+                 TextWrapping="Wrap" AcceptsReturn="True" FontSize="16" MaxLength="500"></TextBox>
 
         <Button x:Name="SaveBtn" Grid.Column="0" Grid.Row="1" VerticalAlignment="Bottom" FontSize="22" Margin="18"
                 Background="#FF4AB0D6" Click="SaveBtn_Click">Save</Button>

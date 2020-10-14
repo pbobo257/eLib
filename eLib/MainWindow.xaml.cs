@@ -24,8 +24,12 @@ namespace eLib
         private Grid libGrid;
 
         protected readonly AppDbContext _context;
-        protected readonly DbSet<BookHeader> _set;
-        private string searchValue = "";
+        protected readonly DbSet<BookHeader> _headerSet;
+        protected readonly DbSet<BookDetails> _detailsSet;
+
+        private string searchValue = string.Empty;
+        private string genreValue = string.Empty;
+        private string yearValue = string.Empty;
 
         public MainWindow(AppDbContext context, Account acc)
         {
@@ -35,7 +39,8 @@ namespace eLib
                 AddButton.Visibility = Visibility.Collapsed;
             }
             _context = context;
-            _set = _context.Set<BookHeader>();
+            _headerSet = _context.Set<BookHeader>();
+            _detailsSet = _context.Set<BookDetails>();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -45,10 +50,10 @@ namespace eLib
 
         private void LibViewer_Loaded(object sender, RoutedEventArgs e)
         {
-            renderLibGrid(searchValue);
+            renderLibGrid(searchValue, genreValue, yearValue);
         }
 
-        private void renderLibGrid(string searchString)
+        private void renderLibGrid(string searchString, string genreString, string yearString)
         {
             libGrid = new Grid();
             var columnCount = Convert.ToInt32(Math.Floor(LibViewer.ActualWidth / 200));
@@ -63,7 +68,7 @@ namespace eLib
                 libGrid.ColumnDefinitions.Add(column);
             }
 
-            var rowCount = (Math.Ceiling((double)_set.Count() / columnCount) == 1) ? 2 : Math.Ceiling((double)_set.Count() / columnCount);
+            var rowCount = (Math.Ceiling((double)_headerSet.Count() / columnCount) == 1) ? 2 : Math.Ceiling((double)_headerSet.Count() / columnCount);
 
             for (int i = 0; i < rowCount; i++)
             {
@@ -75,8 +80,17 @@ namespace eLib
                 libGrid.RowDefinitions.Add(row);
             }
 
-            var bookList = _set.ToList().FindAll(x=> x.Name.Contains(searchString));
+            var bookList = _headerSet.Where(x => x.Name.Contains(searchString)).Include(x=>x.Details).ToList();
 
+            if (genreString != string.Empty)
+            {
+                bookList = bookList.FindAll(x => x.Details.Genre == genreString);
+            }
+
+            if(yearString != string.Empty)
+            {
+                bookList = bookList.FindAll(x => x.Details.ReleaseDate.Year.ToString() == yearString);
+            }
 
             for (int i = 0; i < bookList.Count(); i++)
             {
@@ -135,15 +149,14 @@ namespace eLib
         {
             var border = (Border)sender;
             var id = Convert.ToInt32(border.ToolTip.ToString().Split(' ')[0]);
-            var book = _set.FirstOrDefault(x => x.Id.Equals(id));
-            _context.Entry(book).Reference(b => b.Details).Load();
+            var book = _headerSet.Where(x => x.Id.Equals(id)).Include(b => b.Details).FirstOrDefault();
             var bookView = new ViewBookWindow(book);
             bookView.ShowDialog();
         }
 
         private void LibViewer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            renderLibGrid(searchValue);
+            renderLibGrid(searchValue, genreValue, yearValue);
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
@@ -155,7 +168,46 @@ namespace eLib
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             searchValue = searchField.Text;
-            renderLibGrid(searchValue);
+            renderLibGrid(searchValue, genreValue, yearValue);
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var books = _detailsSet.ToList();
+            GenreList.Items.Add("Genre");
+            YearList.Items.Add("Year");
+            foreach (var book in books)
+            {
+                if (!GenreList.Items.Contains(book.Genre))
+                {
+                    GenreList.Items.Add(book.Genre);
+                }
+                if (!YearList.Items.Contains(book.ReleaseDate.Year.ToString()))
+                {
+                    YearList.Items.Add(book.ReleaseDate.Year.ToString());
+                }
+            }
+
+            GenreList.SelectedIndex = 0;
+            YearList.SelectedIndex = 0;
+        }
+
+        private void GenreList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var combobox = (ComboBox)sender;
+
+            genreValue = combobox.SelectedItem.ToString() == "Genre" ? string.Empty : combobox.SelectedItem.ToString();
+
+            renderLibGrid(searchValue, genreValue, yearValue);
+        }
+
+        private void YearList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var combobox = (ComboBox)sender;
+
+            yearValue = combobox.SelectedItem.ToString() == "Year" ? string.Empty : combobox.SelectedItem.ToString();
+
+            renderLibGrid(searchValue, genreValue, yearValue);
         }
     }
 }

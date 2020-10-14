@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:eLib"
         mc:Ignorable="d"
         Title="eLib" Height="800" Width="800" Closing="Window_Closing" 
-        Background="#FF0C0C0C" Foreground="White"  MinWidth="400">
+        Background="#FF0C0C0C" Foreground="White"  MinWidth="400" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition MinHeight="30" MaxHeight="60" Height="auto"></RowDefinition>
@@ -15,20 +15,31 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         
-        <TextBox x:Name="searchField" Grid.Row="0" Width="250" HorizontalAlignment="Left" 
-                 Margin="5,5,0,5" VerticalContentAlignment="Center" FontSize="14"/>
-        <Button x:Name="SearchButton" Grid.Row="0" Grid.Column="0"
-                HorizontalAlignment="Left" Margin="265,0,0,0" Click="SearchButton_Click">
+        <TextBox x:Name="searchField" Grid.Row="0" Width="500" HorizontalAlignment="Left" 
+                 Margin="5" VerticalContentAlignment="Center" FontSize="14"/>
+        <Button x:Name="SearchButton" Grid.Row="0" Grid.Column="1"
+                HorizontalAlignment="Left" Margin="5,0,5,0" Click="SearchButton_Click">
             <TextBlock Margin="5" FontSize="14">Search</TextBlock>
         </Button>
         
-        <Button x:Name="AddButton" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left"
+        <Button x:Name="AddButton" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left"
                 Click="AddButton_Click">
             <TextBlock Margin="5" FontSize="14">Add Book</TextBlock>
         </Button>
-        
+
+        <ComboBox x:Name="GenreList" SelectionChanged="GenreList_SelectionChanged" Grid.Column="3"
+                  HorizontalAlignment="Right" VerticalContentAlignment="Center" Margin="2" MaxWidth="1000">
+            
+        </ComboBox>
+        <ComboBox x:Name="YearList" SelectionChanged="YearList_SelectionChanged" Grid.Column="4"
+                  HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="2" MaxWidth="1000">
+        </ComboBox>
+
         <ScrollViewer Background="#FF1A1A1A" VerticalScrollBarVisibility="Visible" 
                       x:Name="LibViewer" Grid.Row="1" Grid.ColumnSpan="100" 
                       Loaded="LibViewer_Loaded" SizeChanged="LibViewer_SizeChanged">
