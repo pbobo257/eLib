@@ -1,4 +1,6 @@
 ﻿using eLib.Entities;
+using eLib.Entities.Exceptions;
+using eLib.Logic;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,48 +22,29 @@ namespace eLib
     /// </summary>
     public partial class RegisterWindow : Window
     {
-        protected readonly DbContext _context;
+        protected readonly IAppService _service;
 
-        public RegisterWindow(DbContext context)
+        public RegisterWindow(IAppService service)
         {
             InitializeComponent();
-            _context = context;
+            _service = service;
         }
 
 
         private void RegisterBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (LoginField.Text == string.Empty || MailField.Text == string.Empty
-                || PasswordField.Password == string.Empty || PasswordConfirmField.Password == string.Empty)
+            try
             {
-                MessageBox.Show("All fields must be filled");
-                return;
+                _service.CreateAccount(LoginField.Text, MailField.Text, PasswordField.Password, PasswordConfirmField.Password);
+
+                MessageBox.Show("Account created!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                Close();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            if (!new EmailAddressAttribute().IsValid(MailField.Text))
-            {
-                MessageBox.Show("Enter valid E-Mail!");
-                return;
-            }
-
-            if(PasswordField.Password != PasswordConfirmField.Password)
-            {
-                MessageBox.Show("Passwords must match!");
-                return;
-            }
-
-            var acc = new Account()
-            {
-                Login = LoginField.Text,
-                Email = MailField.Text,
-                Password = PasswordField.Password,
-                UserType = UserType.User
-            };
-
-            _context.Set<Account>().Add(acc);
-            _context.SaveChanges();
-
-            MessageBox.Show("Account created!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void CancelBtn_Click(object sender, RoutedEventArgs e)

@@ -1,5 +1,6 @@
 ﻿using eLib.Entities;
 using eLib.Infrastructure;
+using eLib.Logic;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,14 +27,12 @@ namespace eLib
     {
         protected readonly Brush placeholderBrush;
 
-        private readonly AppDbContext _context;
-        private readonly DbSet<Account> _set;
+        private readonly IAppService _service;
 
-        public LoginWindow(AppDbContext context)
+        public LoginWindow(IAppService service)
         {
             InitializeComponent();
-            _context = context;
-            _set = _context.Set<Account>();
+            _service = service;
             placeholderBrush = LoginPlaceholder.Foreground;
         }
         
@@ -77,15 +76,19 @@ namespace eLib
 
         private void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
-            var acc = _set.FirstOrDefault(x => x.Login.Equals(LoginInput.Text));
-            if (acc == null || acc.Password != PasswordInput.Password)
+            try
             {
-                MessageBox.Show("Wrong login or password", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                var acc = _service.Login(LoginInput.Text, PasswordInput.Password);
+                MainWindow mainWindow = new MainWindow(_service, acc);
+                mainWindow.Show();
+                Hide();
+
             }
-            MainWindow mainWindow = new MainWindow(_context, acc);
-            mainWindow.Show();
-            Hide();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
 
         void OnGotFocusPlaceholderAnim(TextBlock placeholder)
@@ -119,7 +122,7 @@ namespace eLib
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var registerWindow = new RegisterWindow(_context);
+            var registerWindow = new RegisterWindow(_service);
             registerWindow.ShowDialog();
         }
     }

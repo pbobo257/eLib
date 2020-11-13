@@ -2,7 +2,7 @@
 
 namespace eLib.Entities
 {
-    public class Account
+    public class Account : IEntity<int>
     {
         public int Id { get; set; }
         public string Login { get; set; }

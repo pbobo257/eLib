@@ -4,7 +4,7 @@ using System.Text;
 
 namespace eLib.Entities
 {
-    public class BookHeader
+    public class BookHeader : IEntity<int>
     {
         public int Id { get; set; }
         public string Name { get; set; }

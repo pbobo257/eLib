@@ -54,7 +54,7 @@ namespace eLib
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var bitmap = new BitmapImage();
-            using (var ms = new System.IO.MemoryStream(_header.Cover))
+            using (var ms = new MemoryStream(_header.Cover))
             {
 
                 bitmap.BeginInit();

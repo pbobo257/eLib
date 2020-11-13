@@ -1,11 +1,14 @@
 ﻿using eLib.Entities;
+using eLib.Entities.Exceptions;
 using eLib.Infrastructure;
+using eLib.Logic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,17 +26,15 @@ namespace eLib
     /// </summary>
     public partial class AddBookWindow : Window
     {
-        private readonly AppDbContext _context;
-        private readonly DbSet<BookHeader> _headersSet;
-        private BookHeader newHeader = new BookHeader();
-        private BookDetails newDetails = new BookDetails();
+        private readonly IAppService _service;
+        private byte[] Cover;
+        private byte[] Book;
 
-        public AddBookWindow(AppDbContext context)
+        public AddBookWindow(IAppService service)
         {
             InitializeComponent();
 
-            _context = context;
-            _headersSet = _context.Set<BookHeader>();
+            _service = service;
         }
 
         private void LoadImageBtn_Click(object sender, RoutedEventArgs e)
@@ -71,7 +72,7 @@ namespace eLib
                 file.CopyTo(ms);
             }
 
-            newHeader.Cover = ms.ToArray();
+            Cover = ms.ToArray();
 
             ms.Close();
             ms.Dispose();
@@ -103,7 +104,7 @@ namespace eLib
                 file.CopyTo(ms);
             }
 
-            newDetails.Book = ms.ToArray();
+            Book = ms.ToArray();
 
             ms.Close();
             ms.Dispose();
@@ -117,28 +118,17 @@ namespace eLib
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            if(string.IsNullOrEmpty(BookNameInput.Text) || string.IsNullOrEmpty(AuthorInput.Text)
-                || string.IsNullOrEmpty(GenreInput.Text) || ReleaseDatePicker.SelectedDate == null
-                || string.IsNullOrEmpty(DescriptionInput.Text) || newHeader.Cover == null 
-                || newDetails.Book == null)
+            try
             {
-                MessageBox.Show("Fill All Fields!!!");
-                return;
+                _service.CreateBook(BookNameInput.Text, AuthorInput.Text, GenreInput.Text, ReleaseDatePicker.SelectedDate, DescriptionInput.Text, Cover, Book);
+                MessageBox.Show("Saved");
+                Close();
             }
-            newHeader.Name = BookNameInput.Text;
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
-            newDetails.Author = AuthorInput.Text;
-            newDetails.Genre = GenreInput.Text;
-            newDetails.Description = DescriptionInput.Text;
-            newDetails.ReleaseDate = (DateTime)ReleaseDatePicker.SelectedDate;
-
-            newHeader.Details = newDetails;
-            _headersSet.Add(newHeader);
-            _context.SaveChanges();
-
-
-            MessageBox.Show("Saved");
-            Close();
         }
     }
 }

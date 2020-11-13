@@ -1,4 +1,7 @@
 ﻿using eLib.Infrastructure;
+using eLib.Infrastructure.Abstractions;
+using eLib.Infrastructure.Repositories;
+using eLib.Logic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,6 +47,11 @@ namespace eLib
             services.AddDbContext<AppDbContext>
         (options => options.UseSqlServer(
                     Configuration.GetConnectionString("default")));
+
+            services.AddScoped<IAppService, AppService>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IBookHeaderRepository, BookHeaderRepository>();
+            services.AddScoped<IBookDetailsRepository, BookDetailsRepository>();
 
             services.AddTransient(typeof(LoginWindow));
             services.AddTransient(typeof(MainWindow));
