@@ -3,7 +3,7 @@ name: .NET Core
 on: [push]
 
 jobs:
-  build:
+  build_and_test:
 
     runs-on: windows-latest
 
@@ -21,4 +21,4 @@ jobs:
       run: dotnet build -c Release
     
     - name: Test
-      run: dotnet test --no-build
+      run: dotnet test
